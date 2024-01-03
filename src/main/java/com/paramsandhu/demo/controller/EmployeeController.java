@@ -20,9 +20,9 @@ public class EmployeeController {
 
     @PostMapping
     @CacheEvict(value = "employees", allEntries = true)
-    public ResponseEntity<String> createEmployee(@RequestBody EmployeeRequest employeeRequest) {
-        employeeRepository.save(employeeRequest.getEmployee());
-        return ResponseEntity.ok("Employee saved successfully");
+    public ResponseEntity<Employee> createEmployee(@RequestBody EmployeeRequest employeeRequest) {
+        Employee savedEmployee = employeeRepository.save(employeeRequest.getEmployee());
+        return ResponseEntity.ok(savedEmployee);
     }
 
     @GetMapping
