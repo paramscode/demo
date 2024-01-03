@@ -4,6 +4,8 @@ import com.paramsandhu.demo.dto.EmployeeRequest;
 import com.paramsandhu.demo.entity.Employee;
 import com.paramsandhu.demo.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +19,14 @@ public class EmployeeController {
     private EmployeeRepository employeeRepository;
 
     @PostMapping
+    @CacheEvict(value = "employees", allEntries = true)
     public ResponseEntity<String> createEmployee(@RequestBody EmployeeRequest employeeRequest) {
         employeeRepository.save(employeeRequest.getEmployee());
         return ResponseEntity.ok("Employee saved successfully");
     }
 
     @GetMapping
+    @Cacheable("employees")
     public ResponseEntity<Iterable<Employee>> getAllEmployees() {
         return ResponseEntity.ok(employeeRepository.findAll());
     }
