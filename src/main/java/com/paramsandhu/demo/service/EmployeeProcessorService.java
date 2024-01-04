@@ -3,6 +3,7 @@ package com.paramsandhu.demo.service;
 import com.paramsandhu.demo.entity.Employee;
 import com.paramsandhu.demo.repository.EmployeeRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.PageRequest;
@@ -10,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -19,6 +22,9 @@ public class EmployeeProcessorService {
 
     @Value("${employee.processing.limit}")
     private int processingLimit;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     private final EmployeeRepository employeeRepository;
 
@@ -39,6 +45,26 @@ public class EmployeeProcessorService {
             employee.setName(employee.getName().toUpperCase());
             employee.setProcessed(true);
             employeeRepository.save(employee);
+        }
+    }
+
+    public double getTaxDue(long employeeId) {
+        try {
+            String url = "http://localhost:8080/api/tax/" + employeeId;
+            return restTemplate.getForObject(url, Double.class);
+        } catch (HttpClientErrorException e) {
+            // Handle HTTP errors here
+            return 0.0;
+        }
+    }
+
+    public String getAccountNumber(long employeeId) {
+        try {
+            String url = "http://localhost:8080/api/account/" + employeeId;
+            return restTemplate.getForObject(url, String.class);
+        } catch (HttpClientErrorException e) {
+            // Handle HTTP errors here
+            return "";
         }
     }
 }

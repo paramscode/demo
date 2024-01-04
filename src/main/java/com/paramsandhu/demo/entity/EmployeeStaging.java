@@ -10,10 +10,12 @@ import java.time.Instant;
 @Entity
 @Data
 @NoArgsConstructor
-public class Employee {
+public class EmployeeStaging {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private Long employeeId;
 
     private String name;
     private double salary;
@@ -23,21 +25,22 @@ public class Employee {
     private Instant createdTimestamp;
 
     @Column(nullable = false)
-    private boolean isProcessed = false;
-
-    @Column(nullable = false)
     private boolean isEnriched = false;
 
     @Column(nullable = false)
-    private boolean isJsonException = false;
+    private boolean isTaxCalculated = false;
 
+    @Column(nullable = false)
+    private boolean isAccountNumberGenerated = false;
 
-    //private int enrichTries = 0;
+    private int enrichTries = 0;
 
-    //private Instant lastEnrichedTimestamp;
+    private double taxDue;
 
-    @Column(columnDefinition = "TEXT")
-    private String payload;
+    private String accountNumber;
+
+    private Instant lastEnrichedTimestamp;
+
 
 
     @PrePersist
