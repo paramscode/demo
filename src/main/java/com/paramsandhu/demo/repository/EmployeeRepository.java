@@ -17,5 +17,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select e from Employee e where e.isProcessed = false order by e.id ")
     List<Employee> findTopNByIsProcessedFalse(Pageable pageable);
+
+
 }
 

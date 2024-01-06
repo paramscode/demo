@@ -18,5 +18,9 @@ public interface EmployeeStagingRepository extends JpaRepository<EmployeeStaging
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select e from EmployeeStaging e where e.isEnriched = false order by e.id ")
     List<EmployeeStaging> findTopNByIsProcessedFalse(Pageable pageable);
+
+    List<EmployeeStaging> findAllByOrderByCreatedTimestampAsc();
+
+    void deleteAllByIdIn(List<Long> ids);
 }
 

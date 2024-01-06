@@ -18,6 +18,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+
+import java.io.IOException;
+import java.time.Instant;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/employees")
@@ -64,6 +69,9 @@ public class EmployeeController {
         employeeStaging.setEmployeeId(savedEmployee.getId());
         employeeStaging.setTaxDue(employeeProcessorService.getTaxDue(savedEmployee.getId()));
         employeeStaging.setAccountNumber(employeeProcessorService.getAccountNumber(savedEmployee.getId()));
+        employeeStaging.setLastEnrichedTimestamp(Instant.now());
+        employeeStaging.setEnrichTries(1);
+        employeeStaging.setEnriched(true);
         employeeStagingRepository.save(employeeStaging);
         return ResponseEntity.ok(savedEmployee);
     }
@@ -98,5 +106,10 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeRepository.findById(id).get());
     }
 
-    //endpoint which takes an employee object
+
+    @GetMapping("/report")
+    public ResponseEntity<String> generateReport() throws IOException {
+        employeeProcessorService.generateAndUploadReport();
+        return ResponseEntity.ok("Report generated successfully");
+    }
 }

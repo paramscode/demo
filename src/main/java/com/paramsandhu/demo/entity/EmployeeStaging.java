@@ -41,14 +41,10 @@ public class EmployeeStaging {
 
     private Instant lastEnrichedTimestamp;
 
-
-
     @PrePersist
     protected void onCreate() {
-        createdTimestamp = Instant.now(); // Set to current UTC timestamp
+        createdTimestamp = Instant.now();
     }
 
-
-    // Getters and setters
 }
 
