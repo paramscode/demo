@@ -32,7 +32,7 @@ public class EmployeeProcessorService {
         this.employeeRepository = employeeRepository;
     }
 
-    @Scheduled(cron = "*/30 * * * * *") // Runs every 10 seconds
+    //@Scheduled(cron = "*/30 * * * * *") // Runs every 10 seconds
     @Transactional
     //evict cache
     @CacheEvict(value = "employees", allEntries = true)

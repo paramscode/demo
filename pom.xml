@@ -68,6 +68,13 @@
 			<artifactId>caffeine</artifactId>
 		</dependency>
 
+		<!-- AWSsdk S3 dependency -->
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>s3</artifactId>
+			<version>2.22.11</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
