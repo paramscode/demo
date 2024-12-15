@@ -59,6 +59,7 @@ public class EmployeeController {
         employee.setName(employeeNode.path("name").asText());
         employee.setSalary(employeeNode.path("salary").asDouble());
         employee.setMarried(employeeNode.path("married").asBoolean());
+        employee.setDepartment(employeeNode.path("department").asText());  // Added new field
         employee.setPayload(employeeNode.toString());
         Employee savedEmployee = employeeRepository.save(employee);
 
@@ -66,6 +67,7 @@ public class EmployeeController {
         employeeStaging.setName(employeeNode.path("name").asText());
         employeeStaging.setSalary(employeeNode.path("salary").asDouble());
         employeeStaging.setMarried(employeeNode.path("married").asBoolean());
+        employeeStaging.setDepartment(employeeNode.path("department").asText());  // Added new field
         employeeStaging.setEmployeeId(savedEmployee.getId());
         employeeStaging.setTaxDue(employeeProcessorService.getTaxDue(savedEmployee.getId()));
         employeeStaging.setAccountNumber(employeeProcessorService.getAccountNumber(savedEmployee.getId()));
@@ -75,14 +77,6 @@ public class EmployeeController {
         employeeStagingRepository.save(employeeStaging);
         return ResponseEntity.ok(savedEmployee);
     }
-
-
-    /*@PostMapping
-    @CacheEvict(value = "employees", allEntries = true)
-    public ResponseEntity<Employee> createEmployee(@RequestBody EmployeeRequest employeeRequest) {
-        Employee savedEmployee = employeeRepository.save(employeeRequest.getEmployee());
-        return ResponseEntity.ok(savedEmployee);
-    }*/
 
     @GetMapping
     @Cacheable("employees")
@@ -98,14 +92,12 @@ public class EmployeeController {
         PageRequest pageable = PageRequest.of(pageNo, pageSize);
         Page<Employee> page = employeeRepository.findAll(pageable);
         return ResponseEntity.ok(page);
-        //return ResponseEntity.ok(employeeRepository.findAllWithPagination(pageNo, pageSize));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(employeeRepository.findById(id).get());
     }
-
 
     @GetMapping("/report")
     public ResponseEntity<String> generateReport() throws IOException {

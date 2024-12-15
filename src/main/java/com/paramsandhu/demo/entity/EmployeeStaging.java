@@ -20,6 +20,7 @@ public class EmployeeStaging {
     private String name;
     private double salary;
     private boolean married;
+    private String department;  // Added new field
 
     @Column(nullable = false)
     private Instant createdTimestamp;
@@ -45,6 +46,4 @@ public class EmployeeStaging {
     protected void onCreate() {
         createdTimestamp = Instant.now();
     }
-
 }
-

@@ -18,6 +18,7 @@ public class Employee {
     private String name;
     private double salary;
     private boolean married;
+    private String department;  // Added new field
 
     @Column(nullable = false)
     private Instant createdTimestamp;
@@ -31,21 +32,11 @@ public class Employee {
     @Column(nullable = false)
     private boolean isJsonException = false;
 
-
-    //private int enrichTries = 0;
-
-    //private Instant lastEnrichedTimestamp;
-
     @Column(columnDefinition = "TEXT")
     private String payload;
-
 
     @PrePersist
     protected void onCreate() {
         createdTimestamp = Instant.now(); // Set to current UTC timestamp
     }
-
-
-    // Getters and setters
 }
-
