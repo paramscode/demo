@@ -17,11 +17,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -152,22 +154,35 @@ class EmployeeControllerTest {
 
     @Test
     void getAllEmployeesWithPagination_ReturnsPagedResult() throws Exception {
+        // Create test employees
         Employee employee1 = new Employee();
         employee1.setId(1L);
         employee1.setName("John Doe");
         Employee employee2 = new Employee();
         employee2.setId(2L);
         employee2.setName("Jane Doe");
+        List<Employee> employees = Arrays.asList(employee1, employee2);
 
-        Page<Employee> page = new PageImpl<>(Arrays.asList(employee1, employee2));
+        // Create PageRequest
+        PageRequest pageRequest = PageRequest.of(0, 2);
+
+        // Create a proper Page implementation
+        Page<Employee> page = new PageImpl<>(employees, pageRequest, employees.size());
+
+        // Mock repository response
         when(employeeRepository.findAll(any(PageRequest.class))).thenReturn(page);
 
+        // Perform and verify test
         mockMvc.perform(get("/api/employees/page/0/2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].id").value(1))
                 .andExpect(jsonPath("$.content[0].name").value("John Doe"))
                 .andExpect(jsonPath("$.content[1].id").value(2))
-                .andExpect(jsonPath("$.content[1].name").value("Jane Doe"));
+                .andExpect(jsonPath("$.content[1].name").value("Jane Doe"))
+                .andExpect(jsonPath("$.totalElements").value(2))
+                .andExpect(jsonPath("$.totalPages").value(1))
+                .andExpect(jsonPath("$.size").value(2))
+                .andExpect(jsonPath("$.number").value(0));
     }
 
     @Test
