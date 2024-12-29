@@ -54,18 +54,18 @@ public class EmployeeProcessorService {
 
     //@Scheduled(cron = "*/30 * * * * *") // Runs every 10 seconds
     @Transactional
-    //evict cache
     @CacheEvict(value = "employees", allEntries = true)
     public void processUnprocessedEmployees() {
         log.info("Processing unprocessed employees");
         Pageable limit = PageRequest.of(0, processingLimit);
         List<Employee> employees = employeeRepository.findTopNByIsProcessedFalse(limit);
-
-        for (Employee employee : employees) {
+    
+        employees.forEach(employee -> {
             employee.setName(employee.getName().toUpperCase());
             employee.setProcessed(true);
-            employeeRepository.save(employee);
-        }
+        });
+        
+        employeeRepository.saveAll(employees);
     }
 
     public double getTaxDue(long employeeId) {

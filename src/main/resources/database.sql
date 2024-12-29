@@ -1,15 +1,17 @@
--- Add the created_timestamp column with a default value
-ALTER TABLE employee ADD COLUMN created_timestamp TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP;
+-- Grant all privileges on the database
+GRANT ALL PRIVILEGES ON DATABASE mydb TO myuser;
 
--- Update existing rows to have a specific timestamp (e.g., current timestamp)
-UPDATE employee SET created_timestamp = CURRENT_TIMESTAMP;
+-- Connect to the specific database
+\c mydb
 
--- Now alter the column to be non-nullable
-ALTER TABLE employee ALTER COLUMN created_timestamp SET NOT NULL;
+-- Grant all privileges on all tables in the public schema
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO myuser;
 
--- Add the is_processed column with a default value
-ALTER TABLE employee ADD COLUMN is_processed BOOLEAN DEFAULT FALSE;
+-- Grant privileges on future tables
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON TABLES TO myuser;
 
--- Existing rows will automatically get 'false' as the default value
--- Now alter the column to be non-nullable
-ALTER TABLE employee ALTER COLUMN is_processed SET NOT NULL;
+-- Grant usage on schema
+GRANT USAGE ON SCHEMA public TO myuser;
+
+-- Grant create permission on schema
+GRANT CREATE ON SCHEMA public TO myuser;
